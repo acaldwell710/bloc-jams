@@ -12,8 +12,6 @@ var albumPicasso = {
         { title: 'Magenta', duration: '2:15'}
     ]
 };
- 
- // Another Example Album
 var albumMarconi = {
     title: 'The Telephone',
     artist: 'Guglielmo Marconi',
@@ -28,8 +26,6 @@ var albumMarconi = {
         { title: 'Wrong phone number', duration: '2:15'}
     ]
 };
-
-// My Example Album
 var albumCoolJams = {
     title: 'Cool Jams',
     artist: 'various',
@@ -53,7 +49,50 @@ var createSongRow = function (songNumber, songName, songLength) {
         + '  <td class="song-item-duration">' + songLength + '</td>'
         + '</tr>';
  
-    return $(template);
+    
+    var $row = $(template);
+    var clickHandler = function() {
+        var songNumber = $(this).attr('.song-song-number');
+        
+	if (currentlyPlayingSong !== null) {
+		// Revert to song number for currently playing song because user started playing new song.
+		var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSong + '"]');
+		currentlyPlayingCell.html(currentlyPlayingSong);
+	}
+	if (currentlyPlayingSong !== songNumber) {
+		// Switch from Play -> Pause button to indicate new song is playing.
+		$(this).html(pauseButtonTemplate);
+		currentlyPlayingSong = songNumber;
+	} else if (currentlyPlayingSong === songNumber) {
+		// Switch from Pause -> Play button to pause currently playing song.
+		$(this).html(playButtonTemplate);
+		currentlyPlayingSong = null;
+	}
+};
+    var onHover = function(event) {
+        var songNumberCell = $(this).find('.song-item-number');
+        var songNumber = songNumberCell.attr('data-song-number');
+        
+        if (songNumber != currentlyPlayingSong) {
+            songNumberCell.html(playButtonTemplate);
+        }
+    };
+    var offHover = function(event) {
+        var songNumberCell = $(this).find('.song-item-number');
+        var songNumber = songNumberCell.attr('data-song-number');
+        
+        if (songNumber != currentlyPlayingSong) {
+            songNumberCell.html(songNumber);
+        }
+    };
+ 
+    // #1
+    $row.find('.song-item-number').click(clickHandler);
+    // #2
+    $row.hover(onHover, offHover);
+    // #3
+    return $row;
+
 };
 
 // Must remain outside of function in order to be accessed by other functions
@@ -64,15 +103,12 @@ var createSongRow = function (songNumber, songName, songLength) {
     var $albumSongList = $('.album-view-song-list');
 
 var setCurrentAlbum = function (album) {
-  
     $albumTitle.text(album.title);
     $albumArtist.text(album.artist);
     $albumReleaseInfo.text(album.year + ' ' + album.label);
     $albumImage.attr('src', album.albumArtUrl);
- 
      // initialize parent container
         $albumSongList.empty();
- 
      // call createSongRow & loop through all songs
         for (var i = 0; i < album.songs.length; i++) {
             var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
@@ -80,9 +116,6 @@ var setCurrentAlbum = function (album) {
      }
  };
  
-var songListContainer = document.getElementsByClassName('album-view-song-list')[0];
-var songRows = document.getElementsByClassName('album-view-song-item');
-
 // Album button templates
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
 // JUST ADDED BELOW -- PT. 2
@@ -91,79 +124,7 @@ var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause">
 var currentlyPlayingSong = null;
 
 $(document).ready(function() {
-
     setCurrentAlbum(albumPicasso);
- 
-    var myCurrentAlbums = [albumPicasso, albumMarconi, albumCoolJams];
-    var i = 0;
-    $($albumImage).click(function( event ) {
-        setCurrentAlbum(myCurrentAlbums[i]);
-        i++;
-        if (i == myCurrentAlbums.length) {
-            i = 0;
-        }
-    });
-    
-    $(songListContainer).mouseover(function( event ) {
-    // #1
-        if (event.target.parentElement.className === 'album-view-song-item') {
-            var songNumberCell = event.target.parentElement.querySelector('.song-item-number');
-            var songNumber = songNumberCell.getAttribute('data-song-number');
-            if (songNumber != currentlyPlayingSong) {
-                songNumberCell.innerHTML = playButtonTemplate;
-            }
-         }
-    });
-    
-    // JUST ADDED BELOW -- PT. 2
-//    songListContainer.addEventListener("click", function(event) {
-//        console.log(event.target.className);
-//        if (event.target.parentElement.className === 'album-view-song-item') {
-//            event.target.parentElement.querySelector('.song-item-number').innerHTML = pauseButtonTemplate;
-//        }
-//    });
-    // JUST ADDED ABOVE -- PT. 2
-    
-    for (var i = 0; i < songRows.length; i++) {
-
-         songRows[i].addEventListener('mouseleave', function(event) {
-             var songNumberCell = this.querySelector('.song-item-number');
-             var songNumber = songNumberCell.getAttribute('data-song-number');
-             if (songNumber != currentlyPlayingSong) {
-                songNumberCell.innerHTML = songNumber;
-             }
-         });
-        
-        songRows[i].addEventListener('click', function() {
-            var songNumberCell = this.querySelector('.song-item-number');
-            var songNumber = songNumberCell.getAttribute('data-song-number');
-            songNumberCell.innerHTML = pauseButtonTemplate;
-            
-            // if there's no currently playing song
-            // show the pause button
-            // and set the currently playing song to the clicked song
-            if (currentlyPlayingSong == null) {
-                songNumberCell.innerHTML = pauseButtonTemplate;
-                currentlyPlayingSong = songNumber;
-            // if the currently playing song is the song we just clicked on
-            // set the currently playing song to null
-            // hide the pause button
-            } else if (currentlyPlayingSong == songNumber) {
-                currentlyPlayingSong = null;
-                songNumberCell.innerHTML = playButtonTemplate;
-            // if we click on a new song and a different song is playing
-            // find the element of the currently playing song
-            // hide the pause button on that element
-            // show the pause button on the new song
-            // set the currently playing song to the clicked song
-            } else if (currentlyPlayingSong != songNumber) {
-                var currentlyPlayingSongElement = document.querySelector('[data-song-number="' + currentlyPlayingSong + '"]');
-                currentlyPlayingSongElement.innerHTML = currentlyPlayingSong;
-                songNumberCell.innerHTML = pauseButtonTemplate;
-                currentlyPlayingSong = songNumber;
-            }
-        });
-     }
 });
 
 
