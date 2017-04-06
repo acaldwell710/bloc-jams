@@ -101,6 +101,34 @@ var updatePlayerBarSong = function() {
     
     $('.main-controls .play-pause').html(playerBarPauseButton);
 };
+// extra credit refactor --needs work.
+//var nextPrevSong = function() {
+//    var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+//  // Save the last song number before changing it
+//    var lastSongNumber = currentlyPlayingSongNumber;  
+//  // incrementing the song here
+//    if (currentSongIndex >= currentAlbum.songs.length) {
+//        currentSongIndex = 0;
+//        currentSongIndex++;
+//   // decrementing the song here
+//    } else if (currentSongIndex < 0) {
+//        currentSongIndex = currentAlbum.songs.length - 1;
+ //       currentSongIndex--;
+   // }
+//    // Set a new current song
+//    currentlyPlayingSongNumber = currentSongIndex + 1;
+//    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+    // Update the Player Bar information
+//    
+ //   updatePlayerBarSong();
+  //  $('.main-controls .play-pause').html(playerBarPauseButton);
+//    var $nextSongNumberCell = $('.song-item-number[data-song-number="' + //currentlyPlayingSongNumber + '"]');
+ //   var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
+    
+//    $nextSongNumberCell.html(pauseButtonTemplate);
+//    $lastSongNumberCell.html(lastSongNumber);
+//};
+
 
 var nextSong = function() {
     var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
