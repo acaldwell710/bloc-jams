@@ -1,5 +1,5 @@
 
-//refactor lengthy code
+//sets song
 var setSong = function (songNumber) {
     if (currentSoundFile) {
          currentSoundFile.stop();
@@ -21,7 +21,13 @@ var setSong = function (songNumber) {
          currentSoundFile.setVolume(volume);
      }
  };
-
+// ATTEMPT TO TOGGLE PLAY //
+var togglePlayFromPlayerBar = function() {
+    $($playPauseButton).click(function(){					 
+        $(this).toggleClass($playPauseButton);
+    });
+};
+// ATTEMPT TO TOGGLE PLAY //
 var getSongNumberCell = function (number) {
   return $('.song-item-number[data-song-number="' + number + '"]');
 };
@@ -202,11 +208,13 @@ var currentVolume = 80;
 //next and previous button control
 var $previousButton = $('.main-controls .previous');
 var $nextButton = $('.main-controls .next');
+var $playPauseButton = $('.main-controls .play-pause');
 
 $(document).ready(function() {
     setCurrentAlbum(albumPicasso);
     $previousButton.click(previousSong);
     $nextButton.click(nextSong);
+    $playPauseButton.click(togglePlayFromPlayerBar);
 });
 
 
