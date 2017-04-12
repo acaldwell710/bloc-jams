@@ -145,18 +145,21 @@ var setCurrentAlbum = function (album) {
 };
 
 var filterTimeCode = function (timeInSeconds) {
-    var timeInSeconds = Math.floor(setTotalTimeInPlayerBar / 60);
-    var myNewTime = parseFloat(timeInSeconds);
-    return myNewTime;
-    filterTimeCode(totalTime,currentTime);
+    timeInSeconds = parseFloat(timeInSeconds);
+    var minutes = Math.floor(timeInSeconds / 60);
+    var seconds = Math.round(timeInSeconds % 60);
+    if (seconds < 10) {
+      seconds = '0' + seconds;
+    }
+    return minutes + ":" + seconds;
 };
 
 var setTotalTimeInPlayerBar = function (totalTime) {
-    $('.total-time').text(totalTime);
+    $('.total-time').text(filterTimeCode(totalTime));
 };
 
  var setCurrentTimeInPlayerBar = function (currentTime) {
-     $('.current-time').text(currentTime);
+     $('.current-time').text(filterTimeCode(currentTime));
  };
 
 var updateSeekBarWhileSongPlays = function() {
@@ -167,7 +170,7 @@ var updateSeekBarWhileSongPlays = function() {
          var seekBarFillRatio = this.getTime() / this.getDuration();
          var $seekBar = $('.seek-control .seek-bar');
          updateSeekPercentage($seekBar, seekBarFillRatio);
-         setCurrentTimeInPlayerBar(currentSongFromAlbum.currentTime);
+         setCurrentTimeInPlayerBar(this.getTime());
      });
  }
 };
